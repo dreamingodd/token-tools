@@ -19,6 +19,7 @@ public class SendEth {
     private static String value;
 
     public static void main(String[] args) throws Exception {
+        System.out.println("---- Task Begin ----");
         parseArgs(args);
         Config config = new Config();
         OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
@@ -38,6 +39,7 @@ public class SendEth {
         );
         EthSendTransaction ethSendTransaction = web3j.ethSendTransaction(transaction).send();
         System.out.println("Eth send TxHash: " + ethSendTransaction.getTransactionHash());
+        System.out.println("---- Task End ----");
     }
 
     private static void parseArgs(String[] args) {
