@@ -2,6 +2,7 @@ package com.temp.common;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -16,6 +17,14 @@ public class Config {
 
     public String get(String key) {
         return (String)properties.get(key);
+    }
+
+    public BigInteger getGethPrice() {
+        return new BigInteger((String) properties.get("gethPrice"));
+    }
+
+    public BigInteger getGethLimit() {
+        return new BigInteger((String) properties.get("gethLimit"));
     }
 
     public void show() {
