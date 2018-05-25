@@ -11,28 +11,39 @@ import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 
-import java.io.IOException;
-import java.math.BigInteger;
-
 public class SendEth {
+
+    private static String from;
+    private static String to;
+    private static String password;
+    private static String value;
+
     public static void main(String[] args) throws Exception {
+        parseArgs(args);
         Config config = new Config();
         OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
         HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
         Admin admin = Admin.build(httpService);
         Web3j web3j = Web3j.build(httpService);
-        PersonalUnlockAccount flag = admin.personalUnlockAccount(config.get("ethFrom"), config.get("ethFromPass")).send();
+        PersonalUnlockAccount flag = admin.personalUnlockAccount(from, password).send();
         if (flag.getError() != null) throw new Exception("Eth send - " + flag.getError().getMessage());
         Transaction transaction = new Transaction(
-                config.get("ethFrom"),
+                from,
                 null,
                 config.getGethPrice(),
                 config.getGethLimit(),
-                config.get("ethTo"),
-                Convert.toWei(config.get("ethSendValue"), Convert.Unit.ETHER).toBigInteger(),
+                to,
+                Convert.toWei(value, Convert.Unit.ETHER).toBigInteger(),
                 null
         );
         EthSendTransaction ethSendTransaction = web3j.ethSendTransaction(transaction).send();
         System.out.println("Eth send TxHash: " + ethSendTransaction.getTransactionHash());
+    }
+
+    private static void parseArgs(String[] args) {
+        from = args[0];
+        to = args[1];
+        password = args[2];
+        value = args[3];
     }
 }
