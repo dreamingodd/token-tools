@@ -12,10 +12,9 @@ public class Config {
 
     public Config() throws IOException {
         Properties fixedProperties = new Properties();
-        fixedProperties = new Properties();
-        fixedProperties.load(new FileInputStream("src/main/resources/properties.properties"));
         properties = new Properties();
-        properties.load(new FileInputStream((String) properties.get("configPath")));
+        fixedProperties.load(new FileInputStream("src/main/resources/properties.properties"));
+        properties.load(new FileInputStream((String) fixedProperties.get("configPath")));
     }
 
     public String get(String key) {
