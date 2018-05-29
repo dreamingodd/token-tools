@@ -11,12 +11,15 @@ public class Config {
     private Properties properties;
 
     public Config() throws IOException {
+        Properties fixedProperties = new Properties();
+        fixedProperties = new Properties();
+        fixedProperties.load(new FileInputStream("src/main/resources/properties.properties"));
         properties = new Properties();
-        properties.load(new FileInputStream("src/main/resources/properties.properties"));
+        properties.load(new FileInputStream((String) properties.get("configPath")));
     }
 
     public String get(String key) {
-        return (String)properties.get(key);
+        return (String) properties.get(key);
     }
 
     public BigInteger getGethPrice() {
