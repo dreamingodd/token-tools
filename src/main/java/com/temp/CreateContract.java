@@ -50,8 +50,15 @@ public class CreateContract {
             System.out.println("Deploy contract TxHash: " + result3.getTransactionHash());
         } else {
             System.out.println("Deploy contract error: " + result3.getError().getMessage());
+            throw new Exception("Deploy - " + result2.getError().getMessage());
         }
-
+        String txHash = result3.getTransactionHash();
+        TransactionReceipt result4 = getTransactionReceipt(txHash, 15000, 15).get();
+        if (result4.getGasUsed().equals(config.getGethLimit())) {
+            throw new Exception("Contract execution ran out of gas");
+        }
+        String contractAddress = result4.getContractAddress();
+        System.out.println("Contract address: " + contractAddress);
         System.out.println("---- Task End ----");
     }
 
@@ -62,7 +69,7 @@ public class CreateContract {
     private static void parseArgs(String[] args) {
         from = args[0];
     }
-    private Optional<TransactionReceipt> getTransactionReceipt(
+    private static Optional<TransactionReceipt> getTransactionReceipt(
             String transactionHash, int sleepDuration, int attempts) throws Exception {
 
         Optional<TransactionReceipt> receiptOptional = web3j.ethGetTransactionReceipt(transactionHash).sendAsync().get().getTransactionReceipt();
