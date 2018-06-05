@@ -1,7 +1,6 @@
 package com.temp.token;
 
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.quorum.methods.request.PrivateTransaction;
 
 import java.math.BigInteger;
 import java.util.List;

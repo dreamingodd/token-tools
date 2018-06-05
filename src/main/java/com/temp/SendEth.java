@@ -36,8 +36,12 @@ public class SendEth {
                 Convert.toWei(value, Convert.Unit.ETHER).toBigInteger(),
                 null
         );
-        EthSendTransaction ethSendTransaction = web3j.ethSendTransaction(transaction).send();
-        System.out.println("Eth send TxHash: " + ethSendTransaction.getTransactionHash());
+        EthSendTransaction result = web3j.ethSendTransaction(transaction).send();
+        if (result.getError() == null) {
+            System.out.println("Eth send TxHash: " + result.getTransactionHash());
+        } else {
+            System.out.println(result.getError().getMessage());
+        }
         System.out.println("---- Task End ----");
     }
 
