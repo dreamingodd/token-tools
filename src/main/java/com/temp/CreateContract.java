@@ -65,10 +65,6 @@ public class CreateContract {
     private static String getFibonacciSolidityBinary(String path) throws URISyntaxException, IOException {
         return new String(Files.readAllBytes(Paths.get(path)));
     }
-
-    private static void parseArgs(String[] args) {
-        from = args[0];
-    }
     private static Optional<TransactionReceipt> getTransactionReceipt(
             String transactionHash, int sleepDuration, int attempts) throws Exception {
 
@@ -83,5 +79,9 @@ public class CreateContract {
         }
 
         return receiptOptional;
+    }
+
+    private static void parseArgs(String[] args) {
+        from = args[0];
     }
 }
