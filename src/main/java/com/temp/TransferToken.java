@@ -63,8 +63,7 @@ public class TransferToken {
                 contractAddress,
                 encodedFunction);
         // get ALICE
-        String privateKey = "0";
-        ECKeyPair ecKeyPair = ECKeyPair.create(new BigInteger(privateKey));
+        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
         Credentials ALICE = Credentials.create(ecKeyPair);
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
         String hexValue = Numeric.toHexString(signedMessage);
