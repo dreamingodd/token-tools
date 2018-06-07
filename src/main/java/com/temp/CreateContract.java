@@ -2,32 +2,23 @@ package com.temp;
 
 import com.temp.common.Config;
 import com.temp.token.HttpClient;
-import com.temp.token.HumanStandardToken;
+import com.temp.token.YwdSub;
 import okhttp3.OkHttpClient;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Address;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
-import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.abi.datatypes.Address;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Optional;
 
-import static com.temp.token.HumanStandardToken.deploy;
+import static com.temp.token.YwdSub.deploy;
 
 public class CreateContract {
 
@@ -43,38 +34,7 @@ public class CreateContract {
         HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
         Admin admin = Admin.build(httpService);
         web3j = Web3j.build(httpService);
-//        PersonalUnlockAccount result1 = admin.personalUnlockAccount(from, config.get("ethPass")).send();
-//        if (result1.getError() != null) throw new Exception("Unlock - " + result1.getError().getMessage());
-//        EthGetTransactionCount result2 = web3j.ethGetTransactionCount(from, DefaultBlockParameterName.LATEST).send();
-//        if (result2.getError() != null) throw new Exception("Unlock - " + result2.getError().getMessage());
-//        Transaction transaction = Transaction.createContractTransaction(
-//                from,
-//                result2.getTransactionCount(),
-//                config.getGethPrice(),
-//                config.getGethLimit(),
-//                BigInteger.ZERO,
-//                getFibonacciSolidityBinary(config.get("solidityBinaryPath")));
-//        EthSendTransaction result3 = web3j.ethSendTransaction(transaction).send();
-//        if (result3.getError() == null) {
-//            System.out.println("Deploy contract TxHash: " + result3.getTransactionHash());
-//        } else {
-//            System.out.println("Deploy contract error: " + result3.getError().getMessage());
-//            throw new Exception("Deploy - " + result2.getError().getMessage());
-//        }
-//        String txHash = result3.getTransactionHash();
-//        TransactionReceipt result4 = getTransactionReceipt(txHash, 15000, 15).get();
-//        if (result4.getGasUsed().equals(config.getGethLimit())) {
-//            throw new Exception("Contract execution ran out of gas");
-//        }
-//        String contractAddress = result4.getContractAddress();
-//        System.out.println("Contract address: " + contractAddress);
-        // get ALICE
-        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
-        Credentials ALICE = Credentials.create(ecKeyPair);
-        HumanStandardToken contract = deploy(web3j, ALICE, config.getGethPrice(), config.getGethLimit()).send();
-        System.out.println("Contract address: " + contract.getContractAddress());
-        System.out.println(contract.isValid());
-        System.out.println(contract.balanceOf(new Address(from)));
+
         System.out.println("---- Task End ----");
     }
 
