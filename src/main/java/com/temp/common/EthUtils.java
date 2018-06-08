@@ -12,7 +12,7 @@ public class EthUtils {
     public static BigInteger getNonce(Web3j web3j, String address) throws ExecutionException, InterruptedException {
 
         EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
-                address, DefaultBlockParameterName.LATEST).sendAsync().get();
+                address, DefaultBlockParameterName.PENDING).sendAsync().get();
 
         return ethGetTransactionCount.getTransactionCount();
     }
