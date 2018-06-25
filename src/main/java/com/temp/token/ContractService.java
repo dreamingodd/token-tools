@@ -57,8 +57,8 @@ public class ContractService {
             List<String> privateFor) throws IOException, TransactionException {
         TransactionManager transactionManager = new ClientTransactionManager(
                 quorum, nodeConfiguration.getFromAddress(), privateFor);
-//        YwdSub humanStandardToken = YwdSub.deploy(
-//                quorum, transactionManager, GAS_PRICE, GAS_LIMIT.divide(BigInteger.valueOf(100)), BigInteger.ZERO);
+        YwdSub humanStandardToken = YwdSub.deploy(
+                quorum, transactionManager, GAS_PRICE, GAS_LIMIT.divide(BigInteger.valueOf(100)), BigInteger.ZERO);
         return null;
     }
 
