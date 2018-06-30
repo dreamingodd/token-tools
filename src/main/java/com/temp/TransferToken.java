@@ -35,7 +35,7 @@ public class TransferToken {
 
     /**
      * Transfer tokenl
-     * @param args 1.Contract address. 2.Token holder. 3.Token receiver. 4.Amount.
+     * @param args 1.Contract address. 2.Decimals. 3.Token holder. 4.Token receiver. 5.Amount.
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {

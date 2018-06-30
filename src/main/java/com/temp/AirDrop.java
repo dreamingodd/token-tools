@@ -1,6 +1,7 @@
 package com.temp;
 
 import com.temp.common.Config;
+import com.temp.common.EthUtils;
 import com.temp.token.ContractService;
 import com.temp.token.HttpClient;
 import com.temp.token.NodeConfiguration;
@@ -11,8 +12,14 @@ import okhttp3.Response;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.methods.request.Transaction;
@@ -63,67 +70,41 @@ public class AirDrop {
         OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
         HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
         admin = Admin.build(httpService);
-        quorum = Quorum.build(httpService);
         web3j = Web3j.build(httpService);
-        ContractService contractService = new ContractService(quorum, web3j, new NodeConfiguration());
-        for (String to : CsvAddressParser.GetAddressFromLines(filePath)) {
-            try {
-                BigInteger balance = contractService.balanceOf(contractAddress, to);
-                if (balance.compareTo(BigInteger.TEN) > 0) {
-                    sendToken(httpService, BigDecimal.valueOf(Integer.parseInt(quantity)), to, contractService, admin, web3j, config);
-                    zeroAddresses.add(to);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                failAddresses.add(to);
-            }
 
-        }
-        System.out.println("Failed:");
-        for (String address : failAddresses) {
-            System.out.println(address);
-        }
-        System.out.println("\n\n\n\nZERO:");
-        for (String address : zeroAddresses) {
-            System.out.println(address);
+        for (String to : CsvAddressParser.GetAddressFromLines(filePath)) {
+            // get Private Key
+            BigInteger privateKey = GetPrivateKey.getPrivateKey(from);
+            // get actual value
+            Uint256 actualValue = new Uint256(new BigDecimal(Integer.parseInt(quantity)).multiply(new BigDecimal(10).pow(18)).toBigInteger());
+            // compose function
+            Function function = new Function(
+                    "transfer",
+                    Arrays.asList(new Address(to), actualValue),
+                    Collections.singletonList(new TypeReference<Bool>() {
+                    }));
+            BigInteger nonce = EthUtils.getNonce(web3j, from);
+            String encodedFunction = FunctionEncoder.encode(function);
+            RawTransaction rawTransaction = RawTransaction.createTransaction(
+                    nonce,
+                    config.getGethPrice(),
+                    config.getGethLimit(),
+                    contractAddress,
+                    encodedFunction);
+            // get ALICE
+            //        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
+            ECKeyPair ecKeyPair = ECKeyPair.create(privateKey);
+            Credentials ALICE = Credentials.create(ecKeyPair);
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
+            String hexValue = Numeric.toHexString(signedMessage);
+            EthSendTransaction result = web3j.ethSendRawTransaction(hexValue).send();
+            if (result.getError() == null) {
+                System.out.println("Token transfer tx hash: " + result.getTransactionHash());
+            } else {
+                throw new Exception(result.getError().getMessage());
+            }
         }
         System.out.println("---- Task End ----");
-    }
-
-    public static OkHttpClient generateOkHttpClient() throws IOException {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(120, TimeUnit.SECONDS)
-                .readTimeout(120, TimeUnit.SECONDS)
-                .writeTimeout(120, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(true)
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request originalRequest = chain.request();
-                        Request requestWithUserAgent = originalRequest.newBuilder()
-                                .build();
-                        return chain.proceed(requestWithUserAgent);
-                    }
-                });
-        return builder.build();
-    }
-
-    private static void sendToken(HttpService httpService, BigDecimal bigDecimal, String to, ContractService contractService, Admin admin, Web3j web3j, Config config) throws Exception {
-        BigInteger value = Convert.toWei(bigDecimal, Convert.Unit.ETHER).toBigInteger();
-        org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function("transfer", Arrays.<Type>asList(new Address(to), new Uint256(Numeric.decodeQuantity(Numeric.encodeQuantity(value)))), Collections.<TypeReference<?>>emptyList());
-        String data = FunctionEncoder.encode(function);
-        admin.personalUnlockAccount(from, config.get("ethPass")).send();
-        Transaction transaction = new org.web3j.protocol.core.methods.request.Transaction(
-                from,
-                null,
-                config.getGethPrice(),
-                config.getGethLimit(),
-                contractAddress,
-                value,
-                data
-        );
-        EthSendTransaction result = contractService.eth_sendTransaction(httpService, transaction, contractAddress, config.getGethPrice(), config.getGethLimit(), to);
-        System.err.println(String.format("[%s]:%s", to, result.getTransactionHash()));
     }
 
     private static void parseArgs(String[] args) {
