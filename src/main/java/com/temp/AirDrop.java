@@ -1,6 +1,8 @@
 package com.temp;
 
+import com.temp.common.Config;
 import com.temp.token.ContractService;
+import com.temp.token.HttpClient;
 import com.temp.token.NodeConfiguration;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -31,35 +33,44 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * temp
- *
- * @author qiyichen
- * @create 2018/3/29 16:04
+ * Air Drop for FT voting.
+ * @author Ye_WD
+ * @create 2018/6/30
  */
 public class AirDrop {
 
 
-    public static String filePath = "D:\\MVC\\air-drop-OLE-0.csv";
-    static String gethUrl = "https://mvchain.xyz/";
-    static String contractAddress = "0x9d9223436dDD466FC247e9dbbD20207e640fEf58";
-    static String mainAccount = "0xe268d8c22739b9abdabdfb14763ff60d0de5e3ba";
-    static BigInteger GAS_PRICE = Contract.GAS_PRICE.divide(BigInteger.valueOf(5));
-    static BigInteger GAS_LIMIT = Contract.GAS_LIMIT;
+    public static String filePath;
+    public static String contractAddress;
+    public static String from;
+    public static String quantity;
 
+    public static Quorum quorum;
+    private static Web3j web3j;
+    private static Admin admin;
 
+    /**
+     * @param args 1.File Path. 2.Contract Address. 3.Token sender. 4.Quantity.
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
+        System.out.println("---- Task Begin ----");
         List<String> failAddresses = new ArrayList<>();
         List<String> zeroAddresses = new ArrayList<>();
-        HttpService httpService = new HttpService(gethUrl, generateOkHttpClient(), false);
-        Quorum quorum = Quorum.build(httpService);
-        Admin admin = Admin.build(httpService);
-        Web3j web3j = Web3j.build(httpService);
+
+        parseArgs(args);
+        Config config = new Config();
+        OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
+        HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
+        admin = Admin.build(httpService);
+        quorum = Quorum.build(httpService);
+        web3j = Web3j.build(httpService);
         ContractService contractService = new ContractService(quorum, web3j, new NodeConfiguration());
         for (String to : CsvAddressParser.GetAddressFromLines(filePath)) {
             try {
                 BigInteger balance = contractService.balanceOf(contractAddress, to);
                 if (balance.equals(BigInteger.ZERO)) {
-                    sendToken(httpService, BigDecimal.valueOf(10), to, contractService, admin, web3j);
+                    sendToken(httpService, BigDecimal.valueOf(Integer.parseInt(quantity)), to, contractService, admin, web3j, config);
                     zeroAddresses.add(to);
                 }
             } catch (Exception e) {
@@ -76,6 +87,7 @@ public class AirDrop {
         for (String address : zeroAddresses) {
             System.out.println(address);
         }
+        System.out.println("---- Task End ----");
     }
 
     public static OkHttpClient generateOkHttpClient() throws IOException {
@@ -96,22 +108,29 @@ public class AirDrop {
         return builder.build();
     }
 
-    private static void sendToken(HttpService httpService, BigDecimal bigDecimal, String to, ContractService contractService, Admin admin, Web3j web3j) throws Exception {
+    private static void sendToken(HttpService httpService, BigDecimal bigDecimal, String to, ContractService contractService, Admin admin, Web3j web3j, Config config) throws Exception {
         BigInteger value = Convert.toWei(bigDecimal, Convert.Unit.ETHER).toBigInteger();
         org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function("transfer", Arrays.<Type>asList(new Address(to), new Uint256(Numeric.decodeQuantity(Numeric.encodeQuantity(value)))), Collections.<TypeReference<?>>emptyList());
         String data = FunctionEncoder.encode(function);
-        admin.personalUnlockAccount(mainAccount, "mvc123$%^").send();
+        admin.personalUnlockAccount(from, config.get("ethPass")).send();
         Transaction transaction = new org.web3j.protocol.core.methods.request.Transaction(
-                mainAccount,
+                from,
                 null,
-                GAS_PRICE,
-                GAS_LIMIT,
+                config.getGethPrice(),
+                config.getGethLimit(),
                 contractAddress,
                 value,
                 data
         );
-        EthSendTransaction result = contractService.eth_sendTransaction(httpService, transaction, contractAddress, GAS_PRICE, GAS_LIMIT, to);
+        EthSendTransaction result = contractService.eth_sendTransaction(httpService, transaction, contractAddress, config.getGethPrice(), config.getGethLimit(), to);
         System.err.println(String.format("[%s]:%s", to, result.getTransactionHash()));
+    }
+
+    private static void parseArgs(String[] args) {
+        filePath = args[0];
+        contractAddress = args[1];
+        from = args[2];
+        quantity = args[3];
     }
 
 }
