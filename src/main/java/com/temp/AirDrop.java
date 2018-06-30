@@ -69,7 +69,7 @@ public class AirDrop {
         for (String to : CsvAddressParser.GetAddressFromLines(filePath)) {
             try {
                 BigInteger balance = contractService.balanceOf(contractAddress, to);
-                if (balance.equals(BigInteger.ZERO)) {
+                if (balance.compareTo(BigInteger.TEN) > 0) {
                     sendToken(httpService, BigDecimal.valueOf(Integer.parseInt(quantity)), to, contractService, admin, web3j, config);
                     zeroAddresses.add(to);
                 }
