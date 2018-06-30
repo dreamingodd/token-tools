@@ -99,7 +99,8 @@ public class AirDrop {
             String hexValue = Numeric.toHexString(signedMessage);
             EthSendTransaction result = web3j.ethSendRawTransaction(hexValue).send();
             if (result.getError() == null) {
-                System.out.println("Token transfer tx hash: " + result.getTransactionHash());
+                System.out.print("Token transfer to address: " + to);
+                System.out.println(" | Token transfer tx hash: " + result.getTransactionHash());
             } else {
                 throw new Exception(result.getError().getMessage());
             }
