@@ -28,4 +28,4 @@ local.*
 hs_err_pid*
 
 target
-*.properties
+config.properties
