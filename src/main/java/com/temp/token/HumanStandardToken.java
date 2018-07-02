@@ -1,7 +1,6 @@
 package com.temp.token;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -146,8 +145,8 @@ public class HumanStandardToken extends Contract {
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
         final Function function = new Function(
                 "approve",
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_spender),
-                        new org.web3j.abi.datatypes.generated.Uint256(_value)),
+                Arrays.<Type>asList(new Address(_spender),
+                        new Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -162,9 +161,9 @@ public class HumanStandardToken extends Contract {
     public RemoteCall<TransactionReceipt> transferFrom(String _from, String _to, BigInteger _value) {
         final Function function = new Function(
                 "transferFrom",
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_from),
-                        new org.web3j.abi.datatypes.Address(_to),
-                        new org.web3j.abi.datatypes.generated.Uint256(_value)),
+                Arrays.<Type>asList(new Address(_from),
+                        new Address(_to),
+                        new Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -185,7 +184,7 @@ public class HumanStandardToken extends Contract {
 
     public RemoteCall<BigInteger> balanceOf(String _owner) {
         final Function function = new Function("balanceOf",
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner)),
+                Arrays.<Type>asList(new Address(_owner)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -200,8 +199,8 @@ public class HumanStandardToken extends Contract {
     public RemoteCall<TransactionReceipt> transfer(String _to, BigInteger _value) {
         final Function function = new Function(
                 "transfer",
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_to),
-                        new org.web3j.abi.datatypes.generated.Uint256(_value)),
+                Arrays.<Type>asList(new Address(_to),
+                        new Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -209,8 +208,8 @@ public class HumanStandardToken extends Contract {
     public RemoteCall<TransactionReceipt> approveAndCall(String _spender, BigInteger _value, byte[] _extraData) {
         final Function function = new Function(
                 "approveAndCall",
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_spender),
-                        new org.web3j.abi.datatypes.generated.Uint256(_value),
+                Arrays.<Type>asList(new Address(_spender),
+                        new Uint256(_value),
                         new org.web3j.abi.datatypes.DynamicBytes(_extraData)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
@@ -218,25 +217,25 @@ public class HumanStandardToken extends Contract {
 
     public RemoteCall<BigInteger> allowance(String _owner, String _spender) {
         final Function function = new Function("allowance",
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner),
-                        new org.web3j.abi.datatypes.Address(_spender)),
+                Arrays.<Type>asList(new Address(_owner),
+                        new Address(_spender)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public static RemoteCall<HumanStandardToken> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
-                new org.web3j.abi.datatypes.Utf8String(_tokenName),
-                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
-                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Uint256(_initialAmount),
+                new Utf8String(_tokenName),
+                new Uint8(_decimalUnits),
+                new Utf8String(_tokenSymbol)));
         return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
     public static RemoteCall<HumanStandardToken> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
-                new org.web3j.abi.datatypes.Utf8String(_tokenName),
-                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
-                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Uint256(_initialAmount),
+                new Utf8String(_tokenName),
+                new Uint8(_decimalUnits),
+                new Utf8String(_tokenSymbol)));
         return deployRemoteCall(HumanStandardToken.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
