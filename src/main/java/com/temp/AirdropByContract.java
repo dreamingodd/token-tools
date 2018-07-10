@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 public class AirdropByContract {
 
     // Transaction count in a single batch transaction.
-    private static final int TX_SIZE = 100;
+    private static final int TX_SIZE = 50;
 
     private static String filePath;
     private static String contractAddress;
