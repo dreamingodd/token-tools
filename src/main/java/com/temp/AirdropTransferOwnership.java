@@ -13,7 +13,6 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
@@ -22,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -30,16 +28,15 @@ import java.util.List;
  * @author Ye_WD
  * @create 2018/7/2
  */
-public class AirdropByContract {
+public class AirdropTransferOwnership {
 
     private static String contractAddress;
-    private static String decimals;
     private static String from;
-    private static String value;
+    private static String to;
 
     /**
      * Transfer tokenl
-     * @param args 1.Contract address. 2.Decimals. 3.Contract holder. 5.Amount.
+     * @param args 1.Contract address. 2.Contract owner. 3.New Contract ownver
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
@@ -50,17 +47,10 @@ public class AirdropByContract {
         OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
         HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
         Web3j web3j = Web3j.build(httpService);
-        // get actual value
-//        Uint256 actualValue = new Uint256(new BigDecimal(value).multiply(new BigDecimal(10).pow(Integer.parseInt(decimals))).toBigInteger());
-        Uint256 actualValue = new Uint256(new BigDecimal(value).toBigInteger());
         // compose function
-//        Array addresses = new StaticArray(Arrays.asList(new Address("0x12bb047117b8452fa0ad41885e2a3fbc949a489a"), new Address("0x35b2ca5161b7720bee657902cc6bb854a7c97a80")));
-        Array addresses = new DynamicArray(Arrays.asList(
-                new Address("0x12bb047117b8452fa0ad41885e2a3fbc949a489a"),
-                new Address("0x35b2ca5161b7720bee657902cc6bb854a7c97a80")));
         Function function = new Function(
-                "multisend",
-                Arrays.asList(new Address("0x55ee4f8972a511ccba5de915835a5f501615486b"), addresses, actualValue),
+                "transferOwnership",
+                Arrays.asList(new Address(to)),
                 Collections.singletonList(new TypeReference<Bool>() {}));
         BigInteger nonce = EthUtils.getNonce(web3j, from);
         String encodedFunction = FunctionEncoder.encode(function);
@@ -87,8 +77,7 @@ public class AirdropByContract {
 
     private static void parseArgs(String[] args) {
         contractAddress = args[0];
-        decimals = args[1];
-        from = args[2];
-        value = args[3];
+        from = args[1];
+        to = args[2];
     }
 }
