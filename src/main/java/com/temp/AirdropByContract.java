@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Air Drop for FT voting.
@@ -56,26 +57,17 @@ public class AirdropByContract {
         // get Airdrop addresses
         List<Address> addresses = new ArrayList<>();
         List<String> addressStrs = CsvAddressParser.GetAddressFromLines(filePath);
-        // compose function
+        for (String addressStr : addressStrs) {
+            Address address = new Address(addressStr);
+            addresses.add(address);
+        }
+
+        // compose function / transaction
         // you have to use DYNAMIC ARRAY ！！！！！！！！！！！！！！！！！！！！！！！！！！！！
         Array addressArray = new DynamicArray(addresses);
-        Function function = new Function(
-                "multisend",
-                Arrays.asList(new Address(tokenAddress), addressArray, actualValue),
-                Collections.singletonList(new TypeReference<Bool>() {}));
-        BigInteger nonce = EthUtils.getNonce(web3j, from);
-        String encodedFunction = FunctionEncoder.encode(function);
-        RawTransaction rawTransaction = RawTransaction.createTransaction(
-                nonce,
-                config.getGasPrice(),
-                config.getGasLimit(),
-                contractAddress,
-                encodedFunction);
-        // get ALICE
-        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
-        Credentials ALICE = Credentials.create(ecKeyPair);
-        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
-        String hexValue = Numeric.toHexString(signedMessage);
+        RawTransaction rawTransaction = composeRawTransaction(actualValue, addressArray);
+        // get signed hex value
+        String hexValue = generateSig(rawTransaction);
         EthSendTransaction result = web3j.ethSendRawTransaction(hexValue).send();
         if (result.getError() == null) {
             System.out.println("Token transfer tx hash: " + result.getTransactionHash());
@@ -83,6 +75,28 @@ public class AirdropByContract {
             throw new Exception(result.getError().getMessage());
         }
         System.out.println("---- Task End ----");
+    }
+
+    private static String generateSig(RawTransaction rawTransaction) throws Exception {
+        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
+        Credentials ALICE = Credentials.create(ecKeyPair);
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
+        return Numeric.toHexString(signedMessage);
+    }
+
+    private static RawTransaction composeRawTransaction(Uint256 actualValue, Array addressArray) throws ExecutionException, InterruptedException {
+        Function function = new Function(
+                "multisend",
+                Arrays.asList(new Address(tokenAddress), addressArray, actualValue),
+                Collections.singletonList(new TypeReference<Bool>() {}));
+        BigInteger nonce = EthUtils.getNonce(web3j, from);
+        String encodedFunction = FunctionEncoder.encode(function);
+        return RawTransaction.createTransaction(
+                nonce,
+                config.getGasPrice(),
+                config.getGasLimit(),
+                contractAddress,
+                encodedFunction);
     }
 
     private static void init(String[] args) throws IOException {
