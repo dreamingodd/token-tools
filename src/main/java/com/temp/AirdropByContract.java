@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 public class AirdropByContract {
 
     // Transaction count in a single batch transaction.
-    private static final int TX_SIZE = 150;
+    private static final int TX_SIZE = 100;
 
     private static String filePath;
     private static String contractAddress;
@@ -48,7 +48,7 @@ public class AirdropByContract {
 
     /**
      * Transfer tokenl
-     * @param args 1.Airdrop addresses. 2.Function contract address. 3.Token contract address 4.Decimals. 5.Contract holder. 6.Amount.
+     * @param args 1.File Path of Airdrop addresses. 2.Function contract address. 3.Token contract address 4.Decimals. 5.Contract holder. 6.Amount.
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
