@@ -13,7 +13,8 @@ public class EthUtils {
 
         EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
                 address, DefaultBlockParameterName.PENDING).sendAsync().get();
-
-        return ethGetTransactionCount.getTransactionCount();
+        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+        System.out.println("current nonce:" + nonce);
+        return nonce;
     }
 }
