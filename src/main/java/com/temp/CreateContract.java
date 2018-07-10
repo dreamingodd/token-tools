@@ -1,5 +1,6 @@
 package com.temp;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.temp.common.Config;
 import com.temp.common.EthUtils;
 import com.temp.token.HttpClient;
@@ -39,8 +40,13 @@ public class CreateContract {
                 config.getGasLimit(),
                 BigInteger.ZERO,
                 getFibonacciSolidityBinary(path));
-        EthSendTransaction transactionResponse = web3j.ethSendTransaction(transaction).sendAsync().get();
-        String transactionHash = transactionResponse.getTransactionHash();
+        EthSendTransaction result = web3j.ethSendTransaction(transaction).sendAsync().get();
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(objectMapper.writeValueAsString(result));
+        if (result.getError() != null) {
+            throw new Exception(result.getError().getMessage());
+        }
+        String transactionHash = result.getTransactionHash();
         System.out.println("Transaction hash: " + transactionHash);
         TransactionReceipt transactionReceipt = waitForTransactionReceipt(transactionHash);
         String contractAddress = transactionReceipt.getContractAddress();
