@@ -12,18 +12,18 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 
 /**
  * Air Drop for FT voting.
@@ -32,46 +32,46 @@ import java.util.List;
  */
 public class AirdropByContract {
 
+    private static String filePath;
     private static String contractAddress;
+    private static String tokenAddress;
     private static String decimals;
     private static String from;
     private static String value;
 
+    private static Config config;
+    private static Admin web3j;
+
     /**
      * Transfer tokenl
-     * @param args 1.Contract address. 2.Decimals. 3.Contract holder. 5.Amount.
+     * @param args 1.Airdrop addresses. 2.Function contract address. 3.Token contract address 4.Decimals. 5.Contract holder. 6.Amount.
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
         System.out.println("---- Task Begin ----");
 
-        parseArgs(args);
-        Config config = new Config();
-        OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
-        HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
-        Web3j web3j = Web3j.build(httpService);
+        init(args);
         // get actual value
-//        Uint256 actualValue = new Uint256(new BigDecimal(value).multiply(new BigDecimal(10).pow(Integer.parseInt(decimals))).toBigInteger());
-        Uint256 actualValue = new Uint256(new BigDecimal(value).toBigInteger());
+        Uint256 actualValue = new Uint256(new BigDecimal(value).multiply(new BigDecimal(10).pow(Integer.parseInt(decimals))).toBigInteger());
+        // get Airdrop addresses
+        List<Address> addresses = new ArrayList<>();
+        List<String> addressStrs = CsvAddressParser.GetAddressFromLines(filePath);
         // compose function
-//        Array addresses = new StaticArray(Arrays.asList(new Address("0x12bb047117b8452fa0ad41885e2a3fbc949a489a"), new Address("0x35b2ca5161b7720bee657902cc6bb854a7c97a80")));
-        Array addresses = new DynamicArray(Arrays.asList(
-                new Address("0x12bb047117b8452fa0ad41885e2a3fbc949a489a"),
-                new Address("0x35b2ca5161b7720bee657902cc6bb854a7c97a80")));
+        // you have to use DYNAMIC ARRAY ！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+        Array addressArray = new DynamicArray(addresses);
         Function function = new Function(
                 "multisend",
-                Arrays.asList(new Address("0x55ee4f8972a511ccba5de915835a5f501615486b"), addresses, actualValue),
+                Arrays.asList(new Address(tokenAddress), addressArray, actualValue),
                 Collections.singletonList(new TypeReference<Bool>() {}));
         BigInteger nonce = EthUtils.getNonce(web3j, from);
         String encodedFunction = FunctionEncoder.encode(function);
         RawTransaction rawTransaction = RawTransaction.createTransaction(
                 nonce,
-                config.getGethPrice(),
-                config.getGethLimit(),
+                config.getGasPrice(),
+                config.getGasLimit(),
                 contractAddress,
                 encodedFunction);
         // get ALICE
-//        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
         ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
         Credentials ALICE = Credentials.create(ecKeyPair);
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
@@ -85,10 +85,20 @@ public class AirdropByContract {
         System.out.println("---- Task End ----");
     }
 
+    private static void init(String[] args) throws IOException {
+        parseArgs(args);
+        config = new Config();
+        OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
+        HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
+        web3j = Admin.build(httpService);
+    }
+
     private static void parseArgs(String[] args) {
-        contractAddress = args[0];
-        decimals = args[1];
-        from = args[2];
-        value = args[3];
+        filePath = args[0];
+        contractAddress = args[1];
+        tokenAddress = args[2];
+        decimals = args[3];
+        from = args[4];
+        value = args[5];
     }
 }

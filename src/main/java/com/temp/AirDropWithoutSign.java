@@ -116,13 +116,13 @@ public class AirDropWithoutSign {
         Transaction transaction = new org.web3j.protocol.core.methods.request.Transaction(
                 from,
                 null,
-                config.getGethPrice(),
-                config.getGethLimit(),
+                config.getGasPrice(),
+                config.getGasLimit(),
                 contractAddress,
                 value,
                 data
         );
-        EthSendTransaction result = contractService.eth_sendTransaction(httpService, transaction, contractAddress, config.getGethPrice(), config.getGethLimit(), to);
+        EthSendTransaction result = contractService.eth_sendTransaction(httpService, transaction, contractAddress, config.getGasPrice(), config.getGasLimit(), to);
         System.err.println(String.format("[%s]:%s", to, result.getTransactionHash()));
     }
 

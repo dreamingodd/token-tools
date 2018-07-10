@@ -13,8 +13,6 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.net.DatagramSocket;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -65,7 +63,7 @@ public class CreateContractB {
         // get ALICE
         ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
         Credentials ALICE = Credentials.create(ecKeyPair);
-        YwdSub contract = deploy(web3j, ALICE, config.getGethPrice(), config.getGethLimit()).send();
+        YwdSub contract = deploy(web3j, ALICE, config.getGasPrice(), config.getGasLimit()).send();
         System.out.println("Contract address: " + contract.getContractAddress());
         System.out.println(contract.isValid());
         System.out.println(contract.totalSupply().get());

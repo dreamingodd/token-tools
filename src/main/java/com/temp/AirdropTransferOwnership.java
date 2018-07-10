@@ -7,7 +7,6 @@ import okhttp3.OkHttpClient;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
@@ -17,7 +16,6 @@ import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,8 +54,8 @@ public class AirdropTransferOwnership {
         String encodedFunction = FunctionEncoder.encode(function);
         RawTransaction rawTransaction = RawTransaction.createTransaction(
                 nonce,
-                config.getGethPrice(),
-                config.getGethLimit(),
+                config.getGasPrice(),
+                config.getGasLimit(),
                 contractAddress,
                 encodedFunction);
         // get ALICE

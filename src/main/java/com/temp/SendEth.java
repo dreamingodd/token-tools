@@ -30,8 +30,8 @@ public class SendEth {
         Transaction transaction = new Transaction(
                 from,
                 null,
-                config.getGethPrice(),
-                config.getGethLimit(),
+                config.getGasPrice(),
+                config.getGasLimit(),
                 to,
                 Convert.toWei(value, Convert.Unit.ETHER).toBigInteger(),
                 null

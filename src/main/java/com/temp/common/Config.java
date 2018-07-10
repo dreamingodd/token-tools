@@ -21,11 +21,11 @@ public class Config {
         return (String) properties.get(key);
     }
 
-    public BigInteger getGethPrice() {
+    public BigInteger getGasPrice() {
         return new BigInteger((String) properties.get("gethPrice"));
     }
 
-    public BigInteger getGethLimit() {
+    public BigInteger getGasLimit() {
         return new BigInteger((String) properties.get("gethLimit"));
     }
 

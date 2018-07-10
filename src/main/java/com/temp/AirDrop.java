@@ -71,8 +71,8 @@ public class AirDrop {
             String encodedFunction = FunctionEncoder.encode(function);
             RawTransaction rawTransaction = RawTransaction.createTransaction(
                     nonce,
-                    config.getGethPrice(),
-                    config.getGethLimit(),
+                    config.getGasPrice(),
+                    config.getGasLimit(),
                     contractAddress,
                     encodedFunction);
             // get ALICE
