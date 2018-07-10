@@ -33,6 +33,9 @@ import java.util.concurrent.ExecutionException;
  */
 public class AirdropByContract {
 
+    // Transaction count in a single batch transaction.
+    private static final int TX_SIZE = 150;
+
     private static String filePath;
     private static String contractAddress;
     private static String tokenAddress;
@@ -61,18 +64,25 @@ public class AirdropByContract {
             Address address = new Address(addressStr);
             addresses.add(address);
         }
-
-        // compose function / transaction
-        // you have to use DYNAMIC ARRAY ！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-        Array addressArray = new DynamicArray(addresses);
-        RawTransaction rawTransaction = composeRawTransaction(actualValue, addressArray);
-        // get signed hex value
-        String hexValue = generateSig(rawTransaction);
-        EthSendTransaction result = web3j.ethSendRawTransaction(hexValue).send();
-        if (result.getError() == null) {
-            System.out.println("Token transfer tx hash: " + result.getTransactionHash());
-        } else {
-            throw new Exception(result.getError().getMessage());
+        int forCount = (addresses.size() - 1) / TX_SIZE;
+        if (addresses.size() <= TX_SIZE) forCount = 0;
+        BigInteger nonce = EthUtils.getNonce(web3j, from);
+        for (int i = 0; i <= forCount; i++) {
+            int start = TX_SIZE * i;
+            int end = TX_SIZE * (i + 1) < addresses.size() ? TX_SIZE * (i + 1) : addresses.size();
+            List<Address> tmpAddresses = addresses.subList(start, end);
+            // you have to use DYNAMIC ARRAY ！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+            Array addressArray = new DynamicArray(tmpAddresses);
+            RawTransaction rawTransaction = composeRawTransaction(actualValue, addressArray, nonce.add(BigInteger.valueOf(i)));
+            // get signed hex value
+            String hexValue = generateSig(rawTransaction);
+            EthSendTransaction result = web3j.ethSendRawTransaction(hexValue).send();
+            if (result.getError() == null) {
+                System.out.println("Batch transfer tx hash: " + result.getTransactionHash());
+            } else {
+                throw new Exception(result.getError().getMessage());
+            }
+//            Thread.sleep(60000);
         }
         System.out.println("---- Task End ----");
     }
@@ -84,12 +94,12 @@ public class AirdropByContract {
         return Numeric.toHexString(signedMessage);
     }
 
-    private static RawTransaction composeRawTransaction(Uint256 actualValue, Array addressArray) throws ExecutionException, InterruptedException {
+    private static RawTransaction composeRawTransaction(Uint256 actualValue, Array addressArray, BigInteger nonce) throws ExecutionException, InterruptedException {
+        // compose function / transaction
         Function function = new Function(
                 "multisend",
                 Arrays.asList(new Address(tokenAddress), addressArray, actualValue),
                 Collections.singletonList(new TypeReference<Bool>() {}));
-        BigInteger nonce = EthUtils.getNonce(web3j, from);
         String encodedFunction = FunctionEncoder.encode(function);
         return RawTransaction.createTransaction(
                 nonce,
