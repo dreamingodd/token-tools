@@ -1,5 +1,9 @@
 package com.temp;
 
+import com.temp.common.Config;
+import com.temp.common.EthUtils;
+import com.temp.token.HttpClient;
+import okhttp3.OkHttpClient;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
@@ -11,10 +15,12 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -25,35 +31,49 @@ import static org.web3j.tx.ManagedTransaction.GAS_PRICE;
 
 public class SignTokenTransfer {
 
+    private static String contractAddress;
+    private static String from;
+    private static String to;
+    private static String value;
+
+    private static Config config;
+    private static Admin web3j;
+
     public static void main(String[] args) throws Exception {
 
-//        sendTxBySign("0xf8a901848321560083419ce094513306af847d12aa868e7e34132207605fc4f85f80b844a9059cbb000000000000000000000000cfba103e72bc4d25f2c0691b912ddd28629602eb00000000000000000000000000000000000000000000000000000000000334501ba073fe25e07c78766f1068d912187303c92fbd9fbd1be4f60bc021fb58784ba854a0280dd111fb75749e45f7b79e6835666b07beb71cee8fcd5aeff758d51abcd924");
-//        sendTxBySign("0xf8a903848321560083419ce094756b20f28bddb4a251e623de59c829d078fe062480b844a9059cbb000000000000000000000000cfba103e72bc4d25f2c0691b912ddd28629602eb000000000000000000000000000000000000000000000000004a9b63844880001ba05f06276605f354ae445b579b4fc8e56f434d820cd646f853276615e2a70cb517a0589dcb6ebfe29fc1f8b57e59b2ac301010890bc5c9015b53e852abf12583acec");
-        sendTxViaRaw();
-    }
+        init(args);
 
-    private static void sendTxViaRaw() throws Exception {
-
-        String mvcContract = "0x513306af847d12aa868e7e34132207605fc4f85f";
-        String privateKey = "";
-        String to = "0x61a4bee43d6fd14e415166a6b0f4beeb2e293d22";
-        BigDecimal value = new BigDecimal(10.1);
-        Web3j web3j = Web3j.build(new HttpService("http://192.168.213.170:8545"));
-        ECKeyPair ecKeyPair = ECKeyPair.create(new BigInteger(privateKey));
+        BigInteger privateKey = GetPrivateKey.getPrivateKey(from);
+        ECKeyPair ecKeyPair = ECKeyPair.create(privateKey);
         Credentials ALICE = Credentials.create(ecKeyPair);
-        BigInteger nonce = new BigInteger("1");
-        Function function = new Function("transfer", Arrays.<Type>asList(new Address(to), new Uint256(value.multiply(new BigDecimal(100L)).toBigInteger())), Collections.<TypeReference<?>>emptyList());
-        String data =  FunctionEncoder.encode(function);
-        RawTransaction transaction = RawTransaction.createContractTransaction(nonce, GAS_PRICE.divide(BigInteger.valueOf(10)), GAS_LIMIT, BigInteger.ZERO, data);
-        byte[] signedMessage = TransactionEncoder.signMessage(transaction, ALICE);
+        BigInteger nonce = EthUtils.getNonce(web3j, from);
+        Uint256 actualValue = new Uint256(new BigDecimal(value).multiply(new BigDecimal(BigInteger.TEN.pow(18))).toBigInteger());
+        Function function = new Function("transfer", Arrays.asList(new Address(to), actualValue), Collections.<TypeReference<?>>emptyList());
+        String encodedFunction = FunctionEncoder.encode(function);
+        RawTransaction rawTransaction = RawTransaction.createTransaction(
+                nonce,
+                config.getGasPrice(),
+                config.getGasLimit(),
+                contractAddress,
+                encodedFunction);
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
         String hexValue = Numeric.toHexString(signedMessage);
-        EthSendTransaction result = web3j.ethSendRawTransaction(hexValue).send();
-        System.out.println(result);
+        System.out.println(hexValue);
     }
 
-    private static void sendTxBySign(String sign) throws Exception {
-        Web3j web3j = Web3j.build(new HttpService("http://192.168.213.170:8545"));
-        EthSendTransaction result = web3j.ethSendRawTransaction(sign).send();
-        System.out.println(result);
+    private static void init(String[] args) throws IOException {
+        parseArgs(args);
+        config = new Config();
+        OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
+        HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
+        web3j = Admin.build(httpService);
     }
+
+    private static void parseArgs(String[] args) {
+        contractAddress = args[0];
+        from = args[1];
+        to = args[2];
+        value = args[3];
+    }
+
 }
