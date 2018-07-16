@@ -1,0 +1,15 @@
+
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0x0ebe20df1c1170485b2bcbdbc6cb3b29f70423df" "0x0c1b2351ca418318538e4b6da19e761b38f2d922" "222"
+0x49cce71efbe26786a47503e33cddee6607391521d103fcfbd85a494a7812d0b2
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0x0ebe20df1c1170485b2bcbdbc6cb3b29f70423df" "0x66475d2f73c72db043d2335007dc457bbfa79aa9" "222"
+0x27ed2798d486d95a64dcecf8d1aab7e2add5eb27b99cb5d50cfefd6e2cf51cc6
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0x0ebe20df1c1170485b2bcbdbc6cb3b29f70423df" "0xdf44895dc0ab93d611d211bb0ee1f653bcc5b9b8" "222"
+0x80bb3c65ec04279670513b0e5099b84506ca224d41e4f93e2a6a74d478f3a564
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0x0ebe20df1c1170485b2bcbdbc6cb3b29f70423df" "0x3727cb24117b57925e4be6e642107b9387325f5c" "222"
+0xf92e201b307a6fe7116d83a431f67bd8323063095379411d854dcbb0f9b191e6
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0x0ebe20df1c1170485b2bcbdbc6cb3b29f70423df" "0xa89718be0c49b5460868c23b5bb318dbb7ba7f4e" "222"
+0xa72b6464a196db14bd7dc81b294cb79c90973eb30b50b8f2f8aafeac651adef0
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0x0ebe20df1c1170485b2bcbdbc6cb3b29f70423df" "0x8A95630131cA64696e15E2E3a0225836AB800a23" "222"
+0xde6007f1fedfea544db394f0a8162906a507d58e3b49463eb34d86f52c77b1cb
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0x0ebe20df1c1170485b2bcbdbc6cb3b29f70423df" "0xab50ed026a97cfcf5d908aeb96191f35b556405b" "222"
+0x6df76216dd0794295e98d15a433d2c37dead1a771e6ab74a3dca1c380c1cd49b
