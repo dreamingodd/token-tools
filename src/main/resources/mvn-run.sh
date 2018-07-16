@@ -18,6 +18,7 @@ java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0x
 java -classpath "target/token-tools.jar:target/lib/*" com.temp.AirDropWithoutSign "/opt/token-tools/src/test/resources/air-drop-FT-voting-3.csv" "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" "0xd3a79de5B70D788bFf9Cc455Af80fC4dE1B8F940" "1"
 java -classpath "target/token-tools.jar:target/lib/*" com.temp.AirdropByContract "/opt/token-tools/src/test/resources/air-drop-test.csv" "0x3f81686a83B277eC4F781019De0280b6d6e017D3" "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0xd3a79de5B70D788bFf9Cc455Af80fC4dE1B8F940" "1"
 java -classpath "target/token-tools.jar:target/lib/*" com.temp.CreateContract "0xd3a79de5B70D788bFf9Cc455Af80fC4dE1B8F940" "/opt/token-tools/src/test/resources/contract/Airdrop.bin"
+java -classpath "target/token-tools.jar:target/lib/*" com.temp.CreateToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0xd3a79de5B70D788bFf9Cc455Af80fC4dE1B8F940" "0x3f81686a83B277eC4F781019De0280b6d6e017D3" "500"
 java -classpath "target/token-tools.jar:target/lib/*" com.temp.TransferToken "0xb17df9a3b09583a9bdcf757d6367171476d4d8a3" 18 "0xd3a79de5B70D788bFf9Cc455Af80fC4dE1B8F940" "0x3f81686a83B277eC4F781019De0280b6d6e017D3" "500"
 
 # hk-1
