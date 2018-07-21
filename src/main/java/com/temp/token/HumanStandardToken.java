@@ -216,14 +216,17 @@ public class HumanStandardToken extends Contract {
                 new org.web3j.abi.datatypes.Utf8String(_tokenName),
                 new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
                 new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
-        return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY_YOUTUBE, encodedConstructor);
+        return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
     // didn't work
-    public static RemoteCall<HumanStandardToken> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(new ArrayList<>());
-        return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
-    }
+        public static RemoteCall<HumanStandardToken> deployYoutube(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
+            String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
+                    new org.web3j.abi.datatypes.Utf8String(_tokenName),
+                    new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
+                    new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
+            return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY_YOUTUBE, encodedConstructor);
+        }
 
     public static RemoteCall<HumanStandardToken> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
         String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
