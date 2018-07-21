@@ -219,6 +219,7 @@ public class HumanStandardToken extends Contract {
         return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY_YOUTUBE, encodedConstructor);
     }
 
+    // didn't work
     public static RemoteCall<HumanStandardToken> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         String encodedConstructor = FunctionEncoder.encodeConstructor(new ArrayList<>());
         return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
