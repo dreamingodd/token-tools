@@ -82,7 +82,7 @@ public class AirdropByContract {
             } else {
                 throw new Exception(result.getError().getMessage());
             }
-//            Thread.sleep(60000);
+            Thread.sleep(120000);
         }
         System.out.println("---- Task End ----");
     }
