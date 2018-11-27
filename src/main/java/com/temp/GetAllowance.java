@@ -10,7 +10,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.utils.Numeric;
@@ -62,32 +61,6 @@ public class GetAllowance extends EthAction {
         System.out.println("---- Task End ----");
 
     }
-
-    private static Optional<TransactionReceipt> getTransactionReceipt(
-            String transactionHash, int sleepDuration, int attempts) throws Exception {
-
-        Optional<TransactionReceipt> receiptOptional =
-                sendTransactionReceiptRequest(transactionHash);
-        for (int i = 0; i < attempts; i++) {
-            if (!receiptOptional.isPresent()) {
-                Thread.sleep(sleepDuration);
-                receiptOptional = sendTransactionReceiptRequest(transactionHash);
-            } else {
-                break;
-            }
-        }
-
-        return receiptOptional;
-    }
-
-    private static Optional<TransactionReceipt> sendTransactionReceiptRequest(
-            String transactionHash) throws Exception {
-        EthGetTransactionReceipt transactionReceipt =
-                web3j.ethGetTransactionReceipt(transactionHash).sendAsync().get();
-
-        return transactionReceipt.getTransactionReceipt();
-    }
-
     private static void parseArgs(String[] args) {
         contractAddress = args[0];
         owner = args[1];
