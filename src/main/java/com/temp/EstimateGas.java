@@ -39,7 +39,7 @@ public class EstimateGas extends EthAction {
 
         Function function = new Function(
                 "transfer",
-                Arrays.asList(new Address(to), new Uint256(new BigInteger("1"))),
+                Arrays.asList(new Address(to), new Uint256(BigInteger.TEN.pow(18).multiply(new BigInteger("1")))),
                 Collections.singletonList(new TypeReference<Bool>() {}));
         String encodedFunction = FunctionEncoder.encode(function);
         EthEstimateGas result = web3j.ethEstimateGas(
