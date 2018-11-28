@@ -29,7 +29,7 @@ public class Approve extends EthAction {
         init();
         parseArgs(args);
         // Trillion
-        Uint256 limit = new Uint256(BigInteger.TEN.pow(18).multiply(new BigInteger("1000")));
+        Uint256 limit = new Uint256(BigInteger.TEN.pow(18).multiply(new BigInteger("100000000000")));
         Function function = new Function(
                 "approve",
                 Arrays.asList(new Address(spender), limit),
