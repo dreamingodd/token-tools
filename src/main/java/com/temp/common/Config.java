@@ -29,6 +29,10 @@ public class Config {
         return new BigInteger((String) properties.get("gethLimit"));
     }
 
+    public Integer getTetherId() {
+        return Integer.parseInt((String) properties.get("tetherId"));
+    }
+
     public void show() {
         Enumeration enum1 = properties.propertyNames();//得到配置文件的名字
         while(enum1.hasMoreElements()) {
