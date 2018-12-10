@@ -1,4 +1,4 @@
-package com.temp.eth.common;
+package com.temp.common;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,6 +36,10 @@ public class Config {
             String strValue = properties.getProperty(strKey);
             System.out.println(strKey + "=" + strValue);
         }
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 
     public static void main(String[] args) throws IOException {

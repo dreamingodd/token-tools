@@ -1,4 +1,4 @@
-package com.temp.eth.common;
+package com.temp.common;
 
 import java.io.File;
 import java.io.FileFilter;

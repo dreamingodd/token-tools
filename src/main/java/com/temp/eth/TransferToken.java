@@ -1,6 +1,6 @@
 package com.temp.eth;
 
-import com.temp.eth.common.Config;
+import com.temp.common.Config;
 import com.temp.eth.common.EthUtils;
 import com.temp.eth.token.HttpClient;
 import okhttp3.OkHttpClient;

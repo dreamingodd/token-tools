@@ -1,8 +1,8 @@
 package com.temp.eth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.temp.eth.common.Config;
-import com.temp.eth.common.TextSearchFile;
+import com.temp.common.Config;
+import com.temp.common.TextSearchFile;
 import org.apache.commons.io.FileUtils;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
