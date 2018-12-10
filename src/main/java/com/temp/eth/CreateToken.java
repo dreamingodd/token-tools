@@ -1,8 +1,8 @@
-package com.temp;
+package com.temp.eth;
 
-import com.temp.common.Config;
-import com.temp.token.HttpClient;
-import com.temp.token.HumanStandardToken;
+import com.temp.eth.common.Config;
+import com.temp.eth.token.HttpClient;
+import com.temp.eth.token.HumanStandardToken;
 import okhttp3.OkHttpClient;
 import org.springframework.util.Assert;
 import org.web3j.crypto.Credentials;
@@ -13,7 +13,7 @@ import org.web3j.protocol.http.HttpService;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import static com.temp.token.HumanStandardToken.deploy;
+import static com.temp.eth.token.HumanStandardToken.deploy;
 
 
 public class CreateToken {

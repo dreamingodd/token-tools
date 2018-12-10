@@ -1,8 +1,9 @@
-package com.temp;
+package com.temp.eth;
 
-import com.temp.common.Config;
-import com.temp.common.EthUtils;
-import com.temp.token.HttpClient;
+import com.temp.eth.common.Config;
+import com.temp.eth.common.CsvAddressParser;
+import com.temp.eth.common.EthUtils;
+import com.temp.eth.token.HttpClient;
 import okhttp3.OkHttpClient;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;

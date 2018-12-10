@@ -1,4 +1,4 @@
-package com.temp.common;
+package com.temp.eth.common;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;

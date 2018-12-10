@@ -1,9 +1,10 @@
-package com.temp;
+package com.temp.eth;
 
-import com.temp.common.Config;
-import com.temp.token.ContractService;
-import com.temp.token.HttpClient;
-import com.temp.token.NodeConfiguration;
+import com.temp.eth.common.Config;
+import com.temp.eth.common.CsvAddressParser;
+import com.temp.eth.token.ContractService;
+import com.temp.eth.token.HttpClient;
+import com.temp.eth.token.NodeConfiguration;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

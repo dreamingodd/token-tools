@@ -1,4 +1,4 @@
-package com.temp.token;
+package com.temp.eth.token;
 
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
@@ -14,7 +14,6 @@ import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 

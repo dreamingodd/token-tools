@@ -1,4 +1,4 @@
-package com.temp.token;
+package com.temp.eth.token;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

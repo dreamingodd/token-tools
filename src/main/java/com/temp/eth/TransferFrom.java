@@ -1,58 +1,41 @@
-package com.temp;
+package com.temp.eth;
 
-import com.temp.common.Config;
-import com.temp.common.EthUtils;
-import com.temp.token.HttpClient;
-import okhttp3.OkHttpClient;
+import com.temp.eth.common.EthUtils;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 
-
-/**
- * Air Drop for FT voting.
- * @author Ye_WD
- * @create 2018/7/2
- */
-public class AirdropTransferOwnership {
+public class TransferFrom extends EthAction {
 
     private static String contractAddress;
     private static String from;
-    private static String to;
+    private static String sender;
+    private static String value;
 
-    /**
-     * Transfer tokenl
-     * @param args 1.Contract address. 2.Contract owner. 3.New Contract ownver
-     * @throws Exception
-     */
     public static void main(String[] args) throws Exception {
-        System.out.println("---- Task Begin ----");
-
+        init();
         parseArgs(args);
-        Config config = new Config();
-        OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
-        HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
-        Web3j web3j = Web3j.build(httpService);
-        // compose function
+        // Trillion
+        Uint256 limit = new Uint256(new BigInteger(value).multiply(BigInteger.TEN.pow(18)));
+        String to = sender;
         Function function = new Function(
-                "transferOwnership",
-                Arrays.asList(new Address(to)),
+                "transferFrom",
+                Arrays.asList(new Address(from), new Address(to), limit),
                 Collections.singletonList(new TypeReference<Bool>() {}));
-        BigInteger nonce = EthUtils.getNonce(web3j, from);
+        BigInteger nonce = EthUtils.getNonce(web3j, sender);
         String encodedFunction = FunctionEncoder.encode(function);
         RawTransaction rawTransaction = RawTransaction.createTransaction(
                 nonce,
@@ -60,24 +43,24 @@ public class AirdropTransferOwnership {
                 config.getGasLimit(),
                 contractAddress,
                 encodedFunction);
-        // get ALICE
-//        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
-        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
+        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(sender));
         Credentials ALICE = Credentials.create(ecKeyPair);
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
         String hexValue = Numeric.toHexString(signedMessage);
         EthSendTransaction result = web3j.ethSendRawTransaction(hexValue).send();
         if (result.getError() == null) {
-            System.out.println("Token transfer tx hash: " + result.getTransactionHash());
+            System.out.println("Approve TX hash: " + result.getTransactionHash());
         } else {
             throw new Exception(result.getError().getMessage());
         }
         System.out.println("---- Task End ----");
+
     }
 
     private static void parseArgs(String[] args) {
         contractAddress = args[0];
         from = args[1];
-        to = args[2];
+        sender = args[2];
+        value = args[3];
     }
 }

@@ -1,4 +1,4 @@
-package com.temp;
+package com.temp.eth.common;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

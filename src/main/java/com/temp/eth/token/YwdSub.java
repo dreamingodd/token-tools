@@ -1,4 +1,4 @@
-package com.temp.token;
+package com.temp.eth.token;
 
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.EventValues;

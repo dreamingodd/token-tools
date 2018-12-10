@@ -1,8 +1,7 @@
-package com.temp;
+package com.temp.eth;
 
-import com.temp.common.Config;
-import com.temp.common.EthUtils;
-import com.temp.token.HttpClient;
+import com.temp.eth.common.Config;
+import com.temp.eth.token.HttpClient;
 import okhttp3.OkHttpClient;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
@@ -13,15 +12,12 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthEstimateGas;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 public class EstimateGas extends EthAction {
 

@@ -1,4 +1,4 @@
-package com.temp.common;
+package com.temp.eth.common;
 
 import java.io.FileInputStream;
 import java.io.IOException;

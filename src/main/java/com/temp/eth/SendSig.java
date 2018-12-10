@@ -1,7 +1,7 @@
-package com.temp;
+package com.temp.eth;
 
-import com.temp.common.Config;
-import com.temp.token.HttpClient;
+import com.temp.eth.common.Config;
+import com.temp.eth.token.HttpClient;
 import okhttp3.OkHttpClient;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;

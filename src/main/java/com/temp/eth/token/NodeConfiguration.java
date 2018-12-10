@@ -1,4 +1,4 @@
-package com.temp.token;
+package com.temp.eth.token;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

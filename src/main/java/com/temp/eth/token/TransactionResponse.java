@@ -1,4 +1,4 @@
-package com.temp.token;
+package com.temp.eth.token;
 
 import lombok.Getter;
 import lombok.Setter;

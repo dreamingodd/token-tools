@@ -1,41 +1,42 @@
-package com.temp;
+package com.temp.eth;
 
-import com.temp.common.Config;
-import com.temp.common.EthUtils;
-import com.temp.token.HttpClient;
+import com.temp.eth.common.Config;
+import com.temp.eth.common.EthUtils;
+import com.temp.eth.token.HttpClient;
 import okhttp3.OkHttpClient;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class TransferToken {
 
-    private static String from;
-    private static String decimals;
-    private static String to;
+/**
+ * Air Drop for FT voting.
+ * @author Ye_WD
+ * @create 2018/7/2
+ */
+public class AirdropTransferOwnership {
+
     private static String contractAddress;
-    private static String value;
+    private static String from;
+    private static String to;
 
     /**
      * Transfer tokenl
-     * @param args 1.Contract address. 2.Decimals. 3.Token holder. 4.Token receiver. 5.Amount.
+     * @param args 1.Contract address. 2.Contract owner. 3.New Contract ownver
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
@@ -45,14 +46,11 @@ public class TransferToken {
         Config config = new Config();
         OkHttpClient okHttpClient = HttpClient.generateOkHttpClient();
         HttpService httpService = new HttpService(config.get("gethUrl"), okHttpClient, false);
-        Admin admin = Admin.build(httpService);
         Web3j web3j = Web3j.build(httpService);
-        // get actual value
-        Uint256 actualValue = new Uint256(new BigDecimal(value).multiply(new BigDecimal(10).pow(Integer.parseInt(decimals))).toBigInteger());
         // compose function
         Function function = new Function(
-                "transfer",
-                Arrays.asList(new Address(to), actualValue),
+                "transferOwnership",
+                Arrays.asList(new Address(to)),
                 Collections.singletonList(new TypeReference<Bool>() {}));
         BigInteger nonce = EthUtils.getNonce(web3j, from);
         String encodedFunction = FunctionEncoder.encode(function);
@@ -79,9 +77,7 @@ public class TransferToken {
 
     private static void parseArgs(String[] args) {
         contractAddress = args[0];
-        decimals = args[1];
-        from = args[2];
-        to = args[3];
-        value = args[4];
+        from = args[1];
+        to = args[2];
     }
 }
