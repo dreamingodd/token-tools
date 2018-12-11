@@ -12,18 +12,16 @@ public class GetTetherBalance extends BtcAction {
     private static String address;
 
     public static void main(String[] args) throws BitcoindException, IOException, CommunicationException {
-        List<TetherBalance> tetherBalanceList = getTetherBalance();
-
         parseArgs(args);
         // Print
-        for (TetherBalance tetherBalance : tetherBalanceList) {
-            if (address == null) {
+        if (address == null) {
+            List<TetherBalance> tetherBalanceList = getTetherBalance();
+            for (TetherBalance tetherBalance : tetherBalanceList) {
                 System.out.println(tetherBalance);
-            } else {
-                if (address.equals(tetherBalance.getAddress())) {
-                    System.out.println(tetherBalance);
-                }
             }
+        } else {
+            TetherBalance tetherBalance = getTetherBalance(address);
+            System.out.println(tetherBalance);
         }
     }
 
