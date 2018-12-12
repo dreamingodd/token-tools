@@ -89,6 +89,8 @@ public class BtcAction {
     }
 
     /**
+     * -2.Get addresses with Tether.
+     * -1.Send BTC.
      * 1.Get tether balance.
      * 2.Get tether address unspent.
      * 3.Send how much tether.
@@ -131,7 +133,7 @@ public class BtcAction {
 
         // 7.Add fee.
         BigDecimal fee = new BigDecimal(config.get("tetherCollectFee"));
-        OmniCreaterawtxChangeRequiredEntity entity = new OmniCreaterawtxChangeRequiredEntity(unspent.getTxId(), unspent.getVOut(), unspent.getScriptPubKey(), fee);
+        OmniCreaterawtxChangeRequiredEntity entity = new OmniCreaterawtxChangeRequiredEntity(unspent.getTxId(), unspent.getVOut(), unspent.getScriptPubKey(), unspent.getAmount());
         String changeResult = objectMapper.readValue(btcdClient.remoteCall("omni_createrawtx_change",
                 Arrays.asList(referenceResult, Arrays.asList(entity), tetherAddress, fee)).toString(),
                 String.class);
