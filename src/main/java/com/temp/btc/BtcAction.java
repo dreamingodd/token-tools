@@ -88,6 +88,12 @@ public class BtcAction {
         return btcdClient.sendToAddress(address, amount);
     }
 
+    protected static List<TetherBalance> getAllTetherBalances() throws BitcoindException, IOException, CommunicationException {
+        init();
+        return objectMapper.readValue(btcdClient.remoteCall("omni_getallbalancesforid",
+                Arrays.asList(config.getTetherId())).toString(), new TypeReference<List<TetherBalance>>(){});
+    }
+
     /**
      * -2.Get addresses with Tether.
      * -1.Send BTC.
@@ -109,8 +115,14 @@ public class BtcAction {
         List<Output> unspents = listUnspent(Arrays.asList(tetherAddress));
         Output unspent = null;
         if (unspents.size() > 0) {
+            for (Output output : unspents) {
+                if (output.getAmount().compareTo(new BigDecimal("0.00002")) > 0) {
+                    unspent = output;
+                }
+            }
             unspent = unspents.get(0);
-        } else {
+        }
+        if (unspent == null){
             throw new RuntimeException("No unspent on address-" + tetherAddress + " found!");
         }
 
