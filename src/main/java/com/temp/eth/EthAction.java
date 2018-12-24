@@ -10,6 +10,7 @@ import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class EthAction {
 
@@ -52,4 +53,9 @@ public class EthAction {
         return transactionReceipt.getTransactionReceipt();
     }
 
+    protected static String getTransactionByHash(String hash) throws IOException, ExecutionException, InterruptedException {
+        init();
+        web3j.ethGetTransactionByHash(hash).sendAsync().get();
+        return null;
+    }
 }
