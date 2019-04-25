@@ -12,7 +12,6 @@ import com.temp.btc.entity.OmniCreaterawtxChangeRequiredEntity;
 import com.temp.btc.entity.OmniWalletAddressBalance;
 import com.temp.btc.entity.TetherBalance;
 import com.temp.common.Config;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -41,6 +40,11 @@ public class BtcAction {
         config = new Config();
         btcdClient = new BtcdClientImpl(httpProvider, config.getProperties());
         return btcdClient;
+    }
+
+    protected static String getNewAddress()  throws BitcoindException, IOException, CommunicationException {
+        init();
+        return btcdClient.getNewAddress();
     }
 
     protected static BigDecimal getBalance() throws BitcoindException, IOException, CommunicationException {
