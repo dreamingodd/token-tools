@@ -5,6 +5,7 @@ import com.temp.common.CsvAddressParser;
 import com.temp.eth.common.EthUtils;
 import com.temp.eth.token.HttpClient;
 import okhttp3.OkHttpClient;
+import org.springframework.util.StringUtils;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
@@ -42,6 +43,7 @@ public class AirdropByContract {
     private static String tokenAddress;
     private static String decimals;
     private static String from;
+    private static String pk;
     private static String value;
 
     private static Config config;
@@ -89,7 +91,13 @@ public class AirdropByContract {
     }
 
     private static String generateSig(RawTransaction rawTransaction) throws Exception {
-        ECKeyPair ecKeyPair = ECKeyPair.create(GetPrivateKey.getPrivateKey(from));
+        BigInteger privateKey = BigInteger.ZERO;
+        if (StringUtils.isEmpty(pk)) {
+            privateKey = GetPrivateKey.getPrivateKey(from);
+        } else {
+            privateKey = new BigInteger(pk);
+        }
+        ECKeyPair ecKeyPair = ECKeyPair.create(privateKey);
         Credentials ALICE = Credentials.create(ecKeyPair);
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, ALICE);
         return Numeric.toHexString(signedMessage);
@@ -124,6 +132,7 @@ public class AirdropByContract {
         tokenAddress = args[2];
         decimals = args[3];
         from = args[4];
-        value = args[5];
+        pk = args[5];
+        value = args[6];
     }
 }
